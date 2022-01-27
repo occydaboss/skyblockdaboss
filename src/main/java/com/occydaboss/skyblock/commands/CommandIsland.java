@@ -39,7 +39,7 @@ import java.util.Iterator;
 public class CommandIsland implements CommandExecutor {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!(sender instanceof Player) || args[0] == null) return false;
 
         Player player = (Player) sender;
@@ -80,7 +80,7 @@ public class CommandIsland implements CommandExecutor {
             player.sendMessage(AddPrefix.addPrefix("Teleporting..."));
 
             SkyBlock.worldBorderApi.setBorder(player, 50, IslandAPI.getIslandCoordinates(player));
-        } else if (args[0].equals("tp") && Bukkit.getOfflinePlayer(args[1]) != null) {
+        } else if (args[0].equals("tp") && Bukkit.getOfflinePlayer(Bukkit.getPlayer(args[1]).getUniqueId()) != null) {
             Location islandLocation = IslandAPI.getIslandCoordinates(Bukkit.getPlayer(args[1]));
             player.teleport(Bukkit.getWorld("islands").getHighestBlockAt(islandLocation.getBlockX(), islandLocation.getBlockZ()).getLocation());
             player.sendMessage(AddPrefix.addPrefix("Teleporting..."));

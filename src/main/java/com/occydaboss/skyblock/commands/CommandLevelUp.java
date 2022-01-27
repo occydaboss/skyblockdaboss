@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class CommandLevelUp implements CommandExecutor {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!(sender instanceof Player)) return false;
 
         Player player = (Player) sender;

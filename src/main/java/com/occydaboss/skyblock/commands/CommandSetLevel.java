@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class CommandSetLevel implements CommandExecutor {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (Bukkit.getPlayer(args[0]) == null || !NumberUtils.isNumber(args[1]) || args[0] == null || args[1] == null)
             return false;
         Player player = Bukkit.getPlayer(args[0]);
