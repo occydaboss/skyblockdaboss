@@ -1,0 +1,7 @@
+# SkyBlock Configuration File
+
+# MongoDB Connection URI
+mongoURI: 'PASTE URI HERE'
+
+# Prefix used when sending messages
+chatPrefix: '§f[§dSkyBlock§f]'

@@ -1,0 +1,29 @@
+name: SkyBlock
+version: '${project.version}'
+main: com.occydaboss.skyblock.SkyBlock
+api-version: 1.18
+authors: [ occydaboss ]
+description: SkyBlock plugin with brain damage
+depend: [ Vault, FastAsyncWorldEdit, WorldBorderAPI ]
+
+commands:
+  island:
+    description: Island Command
+    usage: /<command> create|reset|tp [username]
+    permission: skyblock.commands.island
+  resetislands:
+    description: Resets all Islands
+    usage: /<command>
+    permission: skyblock.admin.resetislands
+  shop:
+    description: Opens Shop GUI
+    usage: /<command>
+    permission: skyblock.commands.shop
+  setlevel:
+    description: Sets a player's Level
+    usage: /<command> player level
+    permission: skyblock.admin.setlevel
+  levelup:
+    description: Opens the LevelUp GUI
+    usage: /<command>
+    permission: skyblock.commands.levelup
