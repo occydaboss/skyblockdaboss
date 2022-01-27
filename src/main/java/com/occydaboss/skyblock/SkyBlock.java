@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.occydaboss.skyblock.commands.*;
+import com.occydaboss.skyblock.commands.tabcompleters.CommandSetLevelTabCompleter;
 import com.occydaboss.skyblock.util.AddPrefix;
 import com.occydaboss.skyblock.util.EmptyChunkGenerator;
 import com.occydaboss.skyblock.util.Level;
@@ -47,7 +48,9 @@ public final class SkyBlock extends JavaPlugin {
         this.getCommand("shop").setExecutor(new CommandShop());
         this.getCommand("setlevel").setExecutor(new CommandSetLevel());
         this.getCommand("levelup").setExecutor(new CommandLevelUp());
-
+        // Tab Completers
+        this.getCommand("setlevel").setTabCompleter(new CommandSetLevelTabCompleter());
+        //Register Events
         this.getServer().getPluginManager().registerEvents(new Listeners(), this);
 
         // Island
