@@ -9,6 +9,7 @@ import com.mongodb.client.MongoDatabase;
 import com.occydaboss.skyblock.commands.*;
 import com.occydaboss.skyblock.commands.tabcompleters.CommandIslandTabCompleter;
 import com.occydaboss.skyblock.commands.tabcompleters.CommandSetLevelTabCompleter;
+import com.occydaboss.skyblock.recipes.Recipes;
 import com.occydaboss.skyblock.util.AddPrefix;
 import com.occydaboss.skyblock.util.EmptyChunkGenerator;
 import com.occydaboss.skyblock.util.Level;
@@ -49,10 +50,12 @@ public final class SkyBlock extends JavaPlugin {
         this.getCommand("shop").setExecutor(new CommandShop());
         this.getCommand("setlevel").setExecutor(new CommandSetLevel());
         this.getCommand("levelup").setExecutor(new CommandLevelUp());
+
         // Tab Completers
         this.getCommand("island").setTabCompleter(new CommandIslandTabCompleter());
         this.getCommand("setlevel").setTabCompleter(new CommandSetLevelTabCompleter());
-        //Register Events
+
+        // Register Events
         this.getServer().getPluginManager().registerEvents(new Listeners(), this);
 
         // Island
@@ -62,6 +65,11 @@ public final class SkyBlock extends JavaPlugin {
             wc.generator(new EmptyChunkGenerator());
             wc.createWorld();
         }
+
+        // Recipes
+        Recipes.enchantedDiamondRecipe();
+        Recipes.undeadFleshRecipe();
+        Recipes.bobSummonRecipe();
 
         /*
         Other Initialisations

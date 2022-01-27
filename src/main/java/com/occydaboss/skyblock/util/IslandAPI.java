@@ -23,9 +23,34 @@ public class IslandAPI {
             Document document = iterator.next();
             int x = (int) document.get("x");
             int z = (int) document.get("z");
-            SkyBlock.logger.info("Found island at " + x + ", " + z);
             return new Location(Bukkit.getWorld("islands"), x, 62, z);
         }
         return null;
+    }
+
+    public static Location[] getIslandBounds(Player player) {
+        FindIterable<Document> iterable = SkyBlock.database.getCollection("islands")
+                .find(Filters.eq("_id", player.getUniqueId().toString()));
+        Iterator<Document> iterator = iterable.iterator();
+        if (!iterator.hasNext()) {
+            player.sendMessage(AddPrefix.addPrefix("Player " + player + " does not have an island!"));
+            return null;
+        }
+        while (iterator.hasNext()) {
+            Document document = iterator.next();
+            int x1 = (int) document.get("x")-50;
+            int x2 = (int) document.get("x")+50;
+            int z1 = (int) document.get("z")-50;
+            int z2 = (int) document.get("z")+50;
+            return new Location[]{new Location(Bukkit.getWorld("islands"), x1, 0, z1), new Location(Bukkit.getWorld("islands"), x2, 256, z2)};
+        }
+        return null;
+    }
+
+    public static boolean withinIsland(Player player, Location location) {
+        return location.getBlockX() > IslandAPI.getIslandCoordinates(player).getX() - 50 &&
+                location.getBlockX() < IslandAPI.getIslandCoordinates(player).getX() + 50 &&
+                location.getBlockZ() > IslandAPI.getIslandCoordinates(player).getZ() - 50 &&
+                location.getBlockZ() < IslandAPI.getIslandCoordinates(player).getZ() + 50;
     }
 }

@@ -51,13 +51,13 @@ public class ShopItems {
             if (Level.getFarmingLevel(player) >= 100) {
                 item = new ItemBuilder(Material.WHEAT).setDisplayName(ChatColor.GREEN + "Completed!").build();
             } else {
-                item = new ItemBuilder(Material.WHEAT).setDisplayName(ChatColor.YELLOW + "Farming XP: " + Level.getFarmingLevel(player)).setLore(ChatColor.WHITE + "Get Farming XP by breaking Melons and Pumpkins").build();
+                item = new ItemBuilder(Material.WHEAT).setDisplayName(ChatColor.YELLOW + "Farming XP: " + Level.getFarmingLevel(player)).setLore(ChatColor.WHITE + "Get Farming XP by harvesting Sugar Cane").build();
             }
         } else if (Level.getMainLevel(player) == 1) {
             if (Level.getFarmingLevel(player) >= 1000) {
                 item = new ItemBuilder(Material.WHEAT).setDisplayName(ChatColor.GREEN + "Completed!").build();
             } else {
-                item = new ItemBuilder(Material.WHEAT).setDisplayName(ChatColor.YELLOW + "Farming XP: " + Level.getFarmingLevel(player)).setLore(ChatColor.WHITE + "Get Farming XP by breaking Sugar Cane, Melons, and Pumpkins").build();
+                item = new ItemBuilder(Material.WHEAT).setDisplayName(ChatColor.YELLOW + "Farming XP: " + Level.getFarmingLevel(player)).setLore(ChatColor.WHITE + "Get Farming XP by harvesting Melons, and Pumpkins").build();
             }
         }
         return item;
