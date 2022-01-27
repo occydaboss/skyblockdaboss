@@ -19,7 +19,7 @@ import java.io.IOException;
 
 public class CommandResetIslands implements CommandExecutor {
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
         Player[] players = Bukkit.getWorld("islands").getPlayers().toArray(new Player[0]);
         for (Player player : players) {

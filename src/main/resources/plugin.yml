@@ -9,7 +9,7 @@ depend: [ Vault, FastAsyncWorldEdit, WorldBorderAPI ]
 commands:
   island:
     description: Island Command
-    usage: /<command> create|reset|tp [username]
+    usage: /<command> [create|reset|tp] [username]
     permission: skyblock.commands.island
   resetislands:
     description: Resets all Islands
@@ -21,7 +21,7 @@ commands:
     permission: skyblock.commands.shop
   setlevel:
     description: Sets a player's Level
-    usage: /<command> player level
+    usage: /<command> <player> <level>
     permission: skyblock.admin.setlevel
   levelup:
     description: Opens the LevelUp GUI
