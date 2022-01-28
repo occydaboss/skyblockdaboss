@@ -23,13 +23,14 @@ public class CommandIslandTabCompleter implements TabCompleter {
             options.add("tp");
             return options;
         } else if (args.length == 2) {
-            List<String> playerNames = new ArrayList<>();
+            List<String> options = new ArrayList<>();
+            options.add("confirm");
             Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
             Bukkit.getServer().getOnlinePlayers().toArray(players);
             for (int i = 0; i < players.length; i++) {
-                playerNames.add(players[i].getName());
+                options.add(players[i].getName());
             }
-            return playerNames;
+            return options;
         }
         return null;
     }

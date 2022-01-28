@@ -4,12 +4,12 @@ main: com.occydaboss.skyblock.SkyBlock
 api-version: 1.18
 authors: [ occydaboss ]
 description: SkyBlock plugin with brain damage
-depend: [ Vault, FastAsyncWorldEdit, WorldBorderAPI ]
+depend: [ Vault, FastAsyncWorldEdit ]
 
 commands:
   island:
     description: Island Command
-    usage: /<command> [create|reset|tp] [username]
+    usage: /<command> [create|reset|tp] [confirm|username]
     permission: skyblock.commands.island
   resetislands:
     description: Resets all Islands

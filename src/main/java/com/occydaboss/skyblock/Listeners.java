@@ -367,19 +367,19 @@ public class Listeners implements Listener {
                 if (Level.getMiningLevel(player) < 1000) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GRAY + "+5 mining xp"));
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
-                    Level.setFarmingLevel(player, Level.getMiningLevel(player) + 5);
+                    Level.setMiningLevel(player, Level.getMiningLevel(player) + 5);
                 }
             } else if (block.getType().equals(Material.SANDSTONE)) {
                 if (Level.getMiningLevel(player) < 1000) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GRAY + "+7.5 mining xp"));
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
-                    Level.setFarmingLevel(player, Level.getMiningLevel(player) + 7.5);
+                    Level.setMiningLevel(player, Level.getMiningLevel(player) + 7.5);
                 }
             } else if (block.getType().equals(Material.MELON) || block.getType().equals(Material.PUMPKIN)) {
                 if (Level.getMiningLevel(player) < 1000) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.YELLOW + "+5 farming xp"));
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
-                    Level.setFarmingLevel(player, Level.getFarmingLevel(player) + 7.5);
+                    Level.setFarmingLevel(player, Level.getFarmingLevel(player) + 5);
                 }
             }
         }
@@ -595,6 +595,7 @@ public class Listeners implements Listener {
             ItemStack flesh = CustomItems.meatOfTheUndead;
             flesh.setAmount(fleshDrop + 1);
             e.getDrops().add(flesh);
+            Level.setCombatLevel(bobBar2.get(e.getEntity()), Level.getCombatLevel(bobBar2.get(e.getEntity())) + 1d);
 
             bobBar2.get(e.getEntity()).sendMessage(AddPrefix.addPrefix("Bob has been defeated!"));
             bobBar1.get(bobBar2.get(e.getEntity())).removePlayer(bobBar2.get(e.getEntity()));

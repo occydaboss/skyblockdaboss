@@ -24,6 +24,12 @@ public class Level {
         }
     }
 
+    public static void resetPlayerLevels(Player player) {
+        MongoCollection<Document> collection = SkyBlock.database.getCollection("players");
+        collection.findOneAndDelete(Filters.eq("_id", player.getUniqueId().toString()));
+        addPlayerToDatabase(player);
+    }
+
     public static boolean setMainLevel(Player player, int level) {
         MongoCollection<Document> collection = SkyBlock.database.getCollection("players");
         if (collection.find(Filters.eq("_id", player.getUniqueId().toString())).iterator().hasNext()) {

@@ -7,6 +7,7 @@ import com.mongodb.client.model.Filters;
 import com.occydaboss.skyblock.SkyBlock;
 import com.occydaboss.skyblock.util.AddPrefix;
 import com.occydaboss.skyblock.util.IslandAPI;
+import com.occydaboss.skyblock.util.Level;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
@@ -46,32 +47,45 @@ public class CommandIsland implements CommandExecutor {
         File schem = new File("plugins/skyblock/island.schem");
         World world = FaweAPI.getWorld("islands");
 
-        if (args[0].equals("reset")) {
-            player.sendMessage(AddPrefix.addPrefix("Resetting Island..."));
-            SkyBlock.worldBorderApi.resetWorldBorderToGlobal(player);
-            player.teleport(new Location(Bukkit.getWorld("world"), 0, 62, 0));
-            FindIterable<Document> iterable = SkyBlock.database.getCollection("islands")
-                    .find(Filters.eq("_id", player.getUniqueId().toString()));
-            Iterator iterator = iterable.iterator();
-            while (iterator.hasNext()) {
-                Document document = (Document) iterator.next();
-                int x = (int) document.get("x");
-                int z = (int) document.get("z");
+        if (args.length > 1) {
+            if (args[0].equals("reset") && args[1] != null && args[1].equals("confirm")) {
+                player.sendMessage(AddPrefix.addPrefix("Resetting Island..."));
+                player.getInventory().clear();
+                SkyBlock.economy.withdrawPlayer(player, SkyBlock.economy.getBalance(player));
+                SkyBlock.worldBorderApi.resetWorldBorderToGlobal(player);
+                Level.resetPlayerLevels(player);
+                player.teleport(new Location(Bukkit.getWorld("world"), 0, 62, 0));
+                FindIterable<Document> iterable = SkyBlock.database.getCollection("islands")
+                        .find(Filters.eq("_id", player.getUniqueId().toString()));
+                Iterator iterator = iterable.iterator();
+                while (iterator.hasNext()) {
+                    Document document = (Document) iterator.next();
+                    int x = (int) document.get("x");
+                    int z = (int) document.get("z");
 
-                BlockVector3 pos1 = BlockVector3.at(x - 50, 0, z - 50);
-                BlockVector3 pos2 = BlockVector3.at(x + 50, 256, z + 50);
+                    BlockVector3 pos1 = BlockVector3.at(x - 50, 0, z - 50);
+                    BlockVector3 pos2 = BlockVector3.at(x + 50, 256, z + 50);
 
-                for (int x1 = pos1.getX(); x1 <= pos2.getBlockX(); x1++) {
-                    for (int y1 = pos1.getY(); y1 <= pos2.getBlockY(); y1++) {
-                        for (int z1 = pos1.getZ(); z1 <= pos2.getBlockZ(); z1++) {
-                            Bukkit.getWorld("islands").getBlockAt(x1, y1, z1).setType(Material.AIR);
+                    for (int x1 = pos1.getX(); x1 <= pos2.getBlockX(); x1++) {
+                        for (int y1 = pos1.getY(); y1 <= pos2.getBlockY(); y1++) {
+                            for (int z1 = pos1.getZ(); z1 <= pos2.getBlockZ(); z1++) {
+                                Bukkit.getWorld("islands").getBlockAt(x1, y1, z1).setType(Material.AIR);
+                            }
                         }
                     }
                 }
+                player.sendMessage(AddPrefix.addPrefix("Remove Island from Database..."));
+                SkyBlock.database.getCollection("islands").deleteOne(Filters.eq("_id", player.getUniqueId().toString()));
+                createIsland(player, schem, world);
+            } else if (args[0].equals("tp") && Bukkit.getOfflinePlayer(Bukkit.getPlayer(args[1]).getUniqueId()) != null) {
+                Location islandLocation = IslandAPI.getIslandCoordinates(Bukkit.getPlayer(args[1]));
+                player.teleport(Bukkit.getWorld("islands").getHighestBlockAt(islandLocation.getBlockX(), islandLocation.getBlockZ()).getLocation());
+                player.sendMessage(AddPrefix.addPrefix("Teleporting..."));
+
+                SkyBlock.worldBorderApi.setBorder(player, 50, IslandAPI.getIslandCoordinates(Bukkit.getPlayer(args[1])));
             }
-            player.sendMessage(AddPrefix.addPrefix("Remove Island from Database..."));
-            SkyBlock.database.getCollection("islands").deleteOne(Filters.eq("_id", player.getUniqueId().toString()));
-            createIsland(player, schem, world);
+        } else if (args[0].equals("reset")) {
+            player.sendMessage(AddPrefix.addPrefix("Are you sure you want to reset? This resets your balance, inventory and island, and resets your level back to 0. Type /is reset confirm to continue."));
         } else if (args[0].equals("create")) {
             createIsland(player, schem, world);
         } else if (args[0].equals("tp")) {
@@ -80,12 +94,6 @@ public class CommandIsland implements CommandExecutor {
             player.sendMessage(AddPrefix.addPrefix("Teleporting..."));
 
             SkyBlock.worldBorderApi.setBorder(player, 50, IslandAPI.getIslandCoordinates(player));
-        } else if (args[0].equals("tp") && Bukkit.getOfflinePlayer(Bukkit.getPlayer(args[1]).getUniqueId()) != null) {
-            Location islandLocation = IslandAPI.getIslandCoordinates(Bukkit.getPlayer(args[1]));
-            player.teleport(Bukkit.getWorld("islands").getHighestBlockAt(islandLocation.getBlockX(), islandLocation.getBlockZ()).getLocation());
-            player.sendMessage(AddPrefix.addPrefix("Teleporting..."));
-
-            SkyBlock.worldBorderApi.setBorder(player, 50, IslandAPI.getIslandCoordinates(Bukkit.getPlayer(args[1])));
         } else return false;
 
         return true;

@@ -6,7 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import static com.occydaboss.skyblock.util.ShopItems.*;
+import static com.occydaboss.skyblock.util.LevelUpMenuItems.*;
+import static com.occydaboss.skyblock.util.ShopItems.filler;
 
 public class LevelUpGUI {
     private static ItemStack[] items;
