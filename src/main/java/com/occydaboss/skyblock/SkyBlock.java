@@ -41,6 +41,10 @@ public final class SkyBlock extends JavaPlugin {
         Spigot Stuff
          */
 
+
+        // Init Stuff
+
+
         instance = this;
         logger = this.getLogger();
         this.saveDefaultConfig();
