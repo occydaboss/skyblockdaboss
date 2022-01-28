@@ -4,7 +4,7 @@ main: com.occydaboss.skyblock.SkyBlock
 api-version: 1.18
 authors: [ occydaboss ]
 description: SkyBlock plugin with brain damage
-depend: [ Vault, FastAsyncWorldEdit ]
+depend: [ FastAsyncWorldEdit, WorldBorderAPI, Vault ]
 
 commands:
   island:
