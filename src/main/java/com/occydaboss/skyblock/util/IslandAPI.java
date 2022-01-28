@@ -1,51 +1,57 @@
 package com.occydaboss.skyblock.util;
 
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.model.Filters;
 import com.occydaboss.skyblock.SkyBlock;
-import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
 
-import java.util.Iterator;
-
 public class IslandAPI {
+    public static NamespacedKey xKey = new NamespacedKey(SkyBlock.getInstance(), "island_x");
+    public static NamespacedKey zKey = new NamespacedKey(SkyBlock.getInstance(), "island_z");
+
+    public static void addPlayer(Player player, int x, int z) {
+        PersistentDataContainer playerData = player.getPersistentDataContainer();
+
+        if (!playerData.has(xKey)) {
+            playerData.set(xKey, PersistentDataType.INTEGER, x);
+        }
+
+        if (!playerData.has(zKey)) {
+            playerData.set(zKey, PersistentDataType.INTEGER, z);
+        }
+    }
+
+    public static void removePlayer(Player player) {
+        if (player == null || player.getPersistentDataContainer() == null) return;
+        PersistentDataContainer playerData = player.getPersistentDataContainer();
+
+        if (playerData.has(xKey)) {
+            playerData.remove(xKey);
+        }
+
+        if (playerData.has(zKey)) {
+            playerData.remove(zKey);
+        }
+    }
+
     public static Location getIslandCoordinates(Player player) {
-        FindIterable<Document> iterable = SkyBlock.database.getCollection("islands")
-                .find(Filters.eq("_id", player.getUniqueId().toString()));
-        Iterator<Document> iterator = iterable.iterator();
-        if (!iterator.hasNext()) {
-            player.sendMessage(AddPrefix.addPrefix("Player " + player + " does not have an island!"));
-            return null;
-        }
-        while (iterator.hasNext()) {
-            Document document = iterator.next();
-            int x = (int) document.get("x");
-            int z = (int) document.get("z");
-            return new Location(Bukkit.getWorld("islands"), x, 62, z);
-        }
-        return null;
+        int x = player.getPersistentDataContainer().get(xKey, PersistentDataType.INTEGER);
+        int z = player.getPersistentDataContainer().get(xKey, PersistentDataType.INTEGER);
+        return new Location(Bukkit.getWorld("islands"), x, 62, z);
     }
 
     public static Location[] getIslandBounds(Player player) {
-        FindIterable<Document> iterable = SkyBlock.database.getCollection("islands")
-                .find(Filters.eq("_id", player.getUniqueId().toString()));
-        Iterator<Document> iterator = iterable.iterator();
-        if (!iterator.hasNext()) {
-            player.sendMessage(AddPrefix.addPrefix("Player " + player + " does not have an island!"));
-            return null;
-        }
-        while (iterator.hasNext()) {
-            Document document = iterator.next();
-            int x1 = (int) document.get("x") - 50;
-            int x2 = (int) document.get("x") + 50;
-            int z1 = (int) document.get("z") - 50;
-            int z2 = (int) document.get("z") + 50;
-            return new Location[]{new Location(Bukkit.getWorld("islands"), x1, 0, z1), new Location(Bukkit.getWorld("islands"), x2, 256, z2)};
-        }
-        return null;
+        int x = player.getPersistentDataContainer().get(xKey, PersistentDataType.INTEGER);
+        int z = player.getPersistentDataContainer().get(xKey, PersistentDataType.INTEGER);
+        int x1 = x - 50;
+        int x2 = x + 50;
+        int z1 = z - 50;
+        int z2 = z + 50;
+        return new Location[]{new Location(Bukkit.getWorld("islands"), x1, 0, z1), new Location(Bukkit.getWorld("islands"), x2, 256, z2)};
     }
 
     public static BoundingBox getIslandBoundingBox(Player player) {

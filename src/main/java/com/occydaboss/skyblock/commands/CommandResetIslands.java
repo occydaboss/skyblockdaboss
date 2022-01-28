@@ -1,12 +1,12 @@
 package com.occydaboss.skyblock.commands;
 
-import com.occydaboss.skyblock.SkyBlock;
 import com.occydaboss.skyblock.util.AddPrefix;
 import com.occydaboss.skyblock.util.EmptyChunkGenerator;
+import com.occydaboss.skyblock.util.IslandAPI;
 import org.apache.commons.io.FileUtils;
-import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,7 +27,15 @@ public class CommandResetIslands implements CommandExecutor {
         }
 
         sender.sendMessage(AddPrefix.addPrefix("Deleting Islands from Database..."));
-        SkyBlock.database.getCollection("islands").deleteMany(new Document());
+        OfflinePlayer[] offlinePlayers = Bukkit.getOfflinePlayers();
+        Player[] onlinePlayers = Bukkit.getOnlinePlayers().toArray(new Player[0]);
+        for (OfflinePlayer player : offlinePlayers) {
+            Player onlinePlayer = Bukkit.getPlayer(player.getUniqueId());
+            IslandAPI.removePlayer(onlinePlayer);
+        }
+        for (Player player : onlinePlayers) {
+            IslandAPI.removePlayer(player);
+        }
         sender.sendMessage(AddPrefix.addPrefix("Deleting World..."));
         Bukkit.unloadWorld("islands", false);
         try {

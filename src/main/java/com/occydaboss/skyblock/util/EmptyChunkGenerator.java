@@ -1,8 +1,8 @@
 package com.occydaboss.skyblock.util;
 
-import com.mongodb.lang.NonNull;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Random;
 

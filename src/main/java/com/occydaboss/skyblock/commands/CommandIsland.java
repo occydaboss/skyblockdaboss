@@ -1,8 +1,6 @@
 package com.occydaboss.skyblock.commands;
 
 import com.fastasyncworldedit.core.FaweAPI;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
 import com.occydaboss.skyblock.SkyBlock;
 import com.occydaboss.skyblock.util.AddPrefix;
 import com.occydaboss.skyblock.util.IslandAPI;
@@ -18,7 +16,6 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
-import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -51,14 +48,19 @@ public class CommandIsland implements CommandExecutor {
             if (args[0].equals("reset") && args[1] != null && args[1].equals("confirm")) {
                 player.sendMessage(AddPrefix.addPrefix("Resetting Island..."));
                 player.getInventory().clear();
+                SkyBlock.economy.withdrawPlayer(player, SkyBlock.economy.getBalance(player));
+                SkyBlock.worldBorderApi.resetWorldBorderToGlobal(player);
+                Level.resetPlayerLevels(player);
+                player.setHealth(20);
+                player.setLevel(0);
+                player.setExp(0);
+                player.setFoodLevel(20);
+                player.teleport(new Location(Bukkit.getWorld("world"), 0, 62, 0));
+
                 Collection<Entity> nearbyEntites = IslandAPI.getIslandCoordinates(player).getWorld().getNearbyEntities(IslandAPI.getIslandCoordinates(player), 200, 200, 200);
                 for (Entity entity : nearbyEntites) {
                     entity.remove();
                 }
-                SkyBlock.economy.withdrawPlayer(player, SkyBlock.economy.getBalance(player));
-                SkyBlock.worldBorderApi.resetWorldBorderToGlobal(player);
-                Level.resetPlayerLevels(player);
-                player.teleport(new Location(Bukkit.getWorld("world"), 0, 62, 0));
 
                 Location pos1 = IslandAPI.getIslandBounds(player)[0];
                 Location pos2 = IslandAPI.getIslandBounds(player)[1];
@@ -71,11 +73,11 @@ public class CommandIsland implements CommandExecutor {
                     }
                 }
                 player.sendMessage(AddPrefix.addPrefix("Remove Island from Database..."));
-                SkyBlock.database.getCollection("islands").deleteOne(Filters.eq("_id", player.getUniqueId().toString()));
+                IslandAPI.removePlayer(player);
                 createIsland(player, schem, world);
             } else if (args[0].equals("tp") && Bukkit.getOfflinePlayer(Bukkit.getPlayer(args[1]).getUniqueId()) != null) {
                 Location islandLocation = IslandAPI.getIslandCoordinates(Bukkit.getPlayer(args[1]));
-                player.teleport(Bukkit.getWorld("islands").getHighestBlockAt(islandLocation.getBlockX() - 3, islandLocation.getBlockZ()).getLocation());
+                player.teleport(Bukkit.getWorld("islands").getHighestBlockAt(islandLocation.getBlockX(), islandLocation.getBlockZ()).getLocation());
                 player.sendMessage(AddPrefix.addPrefix("Teleporting..."));
                 SkyBlock.worldBorderApi.setBorder(player, 50, IslandAPI.getIslandCoordinates(Bukkit.getPlayer(args[1])));
             }
@@ -85,7 +87,15 @@ public class CommandIsland implements CommandExecutor {
             createIsland(player, schem, world);
         } else if (args[0].equals("tp")) {
             Location islandLocation = IslandAPI.getIslandCoordinates(player);
-            player.teleport(Bukkit.getWorld("islands").getHighestBlockAt(islandLocation.getBlockX(), islandLocation.getBlockZ()).getLocation());
+            player.teleport(
+                    new Location(
+                            Bukkit.getWorld("islands"),
+                            islandLocation.getBlockX(),
+                            Bukkit.getWorld("islands").getHighestBlockAt(islandLocation.getBlockX(), islandLocation.getBlockZ()).getY(),
+                            islandLocation.getBlockZ(),
+                            90, 0
+                    )
+            );
             player.sendMessage(AddPrefix.addPrefix("Teleporting..."));
 
             SkyBlock.worldBorderApi.setBorder(player, 50, IslandAPI.getIslandCoordinates(player));
@@ -101,11 +111,7 @@ public class CommandIsland implements CommandExecutor {
             for (int z = -28000000; z <= 28000000; z += 600) {
                 if (Bukkit.getWorld("islands").getBlockAt(x, 61, z).getType() == Material.AIR) {
                     player.sendMessage(AddPrefix.addPrefix("Adding island to database..."));
-                    MongoCollection<Document> collection = SkyBlock.database.getCollection("islands");
-                    Document document = new Document("_id", player.getUniqueId().toString())
-                            .append("x", x)
-                            .append("z", z);
-                    collection.insertOne(document);
+                    IslandAPI.addPlayer(player, x, z);
                     SkyBlock.logger.info("Creating new island for player of UUID "
                             + player.getUniqueId() + " at coordinates " + x + ", " + z);
 
@@ -116,7 +122,7 @@ public class CommandIsland implements CommandExecutor {
                         try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1)) {
                             Operation operation = new ClipboardHolder(clipboard)
                                     .createPaste(editSession)
-                                    .to(BlockVector3.at(x, 62, z + 3))
+                                    .to(BlockVector3.at(x, 62, z))
                                     .ignoreAirBlocks(false)
                                     .build();
                             Operations.complete(operation);
@@ -125,7 +131,7 @@ public class CommandIsland implements CommandExecutor {
                         e.printStackTrace();
                     }
 
-                    Inventory chest = ((Chest) Bukkit.getWorld("islands").getBlockAt(x + 1, 62, z).getState()).getBlockInventory();
+                    Inventory chest = ((Chest) Bukkit.getWorld("islands").getBlockAt(x - 2, 62, z).getState()).getBlockInventory();
                     ItemStack[] items = {
                             new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR),
                             new ItemStack(Material.AIR), new ItemStack(Material.LEATHER_HELMET), new ItemStack(Material.AIR),
@@ -140,9 +146,9 @@ public class CommandIsland implements CommandExecutor {
                     chest.setContents(items);
 
                     player.sendMessage(AddPrefix.addPrefix("Done! Teleporting..."));
-                    player.teleport(new Location(Bukkit.getWorld(world.getName()), x, 62, z + 3));
+                    player.teleport(new Location(Bukkit.getWorld(world.getName()), x, 62, z, 90, 0));
 
-                    SkyBlock.worldBorderApi.setBorder(player, 50, new Location(Bukkit.getWorld("islands"), x, 62, z));
+                    SkyBlock.worldBorderApi.setBorder(player, 50, new Location(Bukkit.getWorld("islands"), x, 62, z, 90, 0));
 
                     breakLoop = true;
                     break;

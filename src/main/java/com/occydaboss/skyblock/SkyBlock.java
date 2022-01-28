@@ -1,15 +1,11 @@
 package com.occydaboss.skyblock;
 
 import com.github.yannicklamprecht.worldborder.api.WorldBorderApi;
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
 import com.occydaboss.skyblock.commands.*;
 import com.occydaboss.skyblock.commands.tabcompleters.CommandIslandTabCompleter;
 import com.occydaboss.skyblock.commands.tabcompleters.CommandSetLevelTabCompleter;
 import com.occydaboss.skyblock.listeners.*;
+import com.occydaboss.skyblock.listeners.menulisteners.*;
 import com.occydaboss.skyblock.recipes.Recipes;
 import com.occydaboss.skyblock.util.AddPrefix;
 import com.occydaboss.skyblock.util.EmptyChunkGenerator;
@@ -26,7 +22,6 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 public final class SkyBlock extends JavaPlugin {
-    public static MongoDatabase database;
     public static Logger logger;
     public static JPerPlayerMethodBasedScoreboard scoreboard;
     public static WorldBorderApi worldBorderApi;
@@ -43,8 +38,6 @@ public final class SkyBlock extends JavaPlugin {
 
 
         // Init Stuff
-
-
         instance = this;
         logger = this.getLogger();
         this.saveDefaultConfig();
@@ -66,6 +59,11 @@ public final class SkyBlock extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new CobblestoneGeneratorListener(), this);
         this.getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        this.getServer().getPluginManager().registerEvents(new BuyMenu(), this);
+        this.getServer().getPluginManager().registerEvents(new LevelUpMenu(), this);
+        this.getServer().getPluginManager().registerEvents(new MainMenu(), this);
+        this.getServer().getPluginManager().registerEvents(new SellMenu(), this);
+        this.getServer().getPluginManager().registerEvents(new ShopMenu(), this);
 
         // Island
         if (Bukkit.getWorld("islands") == null) {
@@ -79,18 +77,6 @@ public final class SkyBlock extends JavaPlugin {
         Recipes.enchantedDiamondRecipe();
         Recipes.undeadFleshRecipe();
         Recipes.bobSummonRecipe();
-
-        /*
-        Other Initialisations
-         */
-
-        this.getLogger().info("Connecting to MongoDB...");
-        ConnectionString connectionString = new ConnectionString(this.getConfig().getString("mongoURI"));
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(connectionString)
-                .build();
-        MongoClient mongoClient = MongoClients.create(settings);
-        database = mongoClient.getDatabase("skyblock");
 
         scoreboard = new JPerPlayerMethodBasedScoreboard();
 
