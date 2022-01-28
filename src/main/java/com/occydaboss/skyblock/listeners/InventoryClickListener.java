@@ -193,14 +193,28 @@ public class InventoryClickListener implements Listener {
             // Level Up Menu
             if (ChatColor.stripColor(e.getView().getTitle()).equalsIgnoreCase("Level Up")) {
                 if (e.getCurrentItem().getType().equals(Material.LIME_STAINED_GLASS_PANE)) {
-                    player.closeInventory();
-                    if (Level.getMainLevel(player) == 0) {
-                        Level.setMiningLevel(player, 0);
-                        Level.setFarmingLevel(player, 0);
+                    switch (Level.getMainLevel(player)) {
+                        case 0:
+                            if (SkyBlock.economy.has(player, 1000)) {
+                                Level.resetSubLevels(player);
+                                Level.setMainLevel(player, Level.getMainLevel(player) + 1);
+                                player.sendMessage(AddPrefix.addPrefix("You are now level " + Level.getMainLevel(player)));
+                                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
+                                player.closeInventory();
+                                SkyBlock.economy.withdrawPlayer(player, 1000);
+                            }
+                            break;
+                        case 1:
+                            if (SkyBlock.economy.has(player, 10000)) {
+                                Level.resetSubLevels(player);
+                                Level.setMainLevel(player, Level.getMainLevel(player) + 1);
+                                player.sendMessage(AddPrefix.addPrefix("You are now level " + Level.getMainLevel(player)));
+                                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
+                                player.closeInventory();
+                                SkyBlock.economy.withdrawPlayer(player, 10000);
+                            }
+                            break;
                     }
-                    Level.setMainLevel(player, Level.getMainLevel(player) + 1);
-                    player.sendMessage(AddPrefix.addPrefix("You are now level " + Level.getMainLevel(player)));
-                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
                 }
 
                 e.setCancelled(true);

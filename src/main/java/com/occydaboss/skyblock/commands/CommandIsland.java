@@ -26,6 +26,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -34,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collection;
 
 public class CommandIsland implements CommandExecutor {
 
@@ -49,6 +51,10 @@ public class CommandIsland implements CommandExecutor {
             if (args[0].equals("reset") && args[1] != null && args[1].equals("confirm")) {
                 player.sendMessage(AddPrefix.addPrefix("Resetting Island..."));
                 player.getInventory().clear();
+                Collection<Entity> nearbyEntites = IslandAPI.getIslandCoordinates(player).getWorld().getNearbyEntities(IslandAPI.getIslandCoordinates(player), 200, 200, 200);
+                for (Entity entity : nearbyEntites) {
+                    entity.remove();
+                }
                 SkyBlock.economy.withdrawPlayer(player, SkyBlock.economy.getBalance(player));
                 SkyBlock.worldBorderApi.resetWorldBorderToGlobal(player);
                 Level.resetPlayerLevels(player);
@@ -69,9 +75,8 @@ public class CommandIsland implements CommandExecutor {
                 createIsland(player, schem, world);
             } else if (args[0].equals("tp") && Bukkit.getOfflinePlayer(Bukkit.getPlayer(args[1]).getUniqueId()) != null) {
                 Location islandLocation = IslandAPI.getIslandCoordinates(Bukkit.getPlayer(args[1]));
-                player.teleport(Bukkit.getWorld("islands").getHighestBlockAt(islandLocation.getBlockX(), islandLocation.getBlockZ()).getLocation());
+                player.teleport(Bukkit.getWorld("islands").getHighestBlockAt(islandLocation.getBlockX() - 3, islandLocation.getBlockZ()).getLocation());
                 player.sendMessage(AddPrefix.addPrefix("Teleporting..."));
-
                 SkyBlock.worldBorderApi.setBorder(player, 50, IslandAPI.getIslandCoordinates(Bukkit.getPlayer(args[1])));
             }
         } else if (args[0].equals("reset")) {

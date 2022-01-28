@@ -7,6 +7,7 @@ import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 
 import java.util.Iterator;
 
@@ -38,13 +39,17 @@ public class IslandAPI {
         }
         while (iterator.hasNext()) {
             Document document = iterator.next();
-            int x1 = (int) document.get("x")-50;
-            int x2 = (int) document.get("x")+50;
-            int z1 = (int) document.get("z")-50;
-            int z2 = (int) document.get("z")+50;
+            int x1 = (int) document.get("x") - 50;
+            int x2 = (int) document.get("x") + 50;
+            int z1 = (int) document.get("z") - 50;
+            int z2 = (int) document.get("z") + 50;
             return new Location[]{new Location(Bukkit.getWorld("islands"), x1, 0, z1), new Location(Bukkit.getWorld("islands"), x2, 256, z2)};
         }
         return null;
+    }
+
+    public static BoundingBox getIslandBoundingBox(Player player) {
+        return BoundingBox.of(getIslandBounds(player)[0], getIslandBounds(player)[1]);
     }
 
     public static boolean withinIsland(Player player, Location location) {

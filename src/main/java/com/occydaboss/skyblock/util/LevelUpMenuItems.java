@@ -9,15 +9,16 @@ import org.bukkit.inventory.ItemStack;
 public class LevelUpMenuItems {
     public static ItemStack levelUpButton(Player player) {
         ItemStack noXP = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName(ChatColor.RED + "You don't have enough XP!").build();
-        ItemStack levelUpButton = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE).setDisplayName(ChatColor.GREEN + "Level Up!").build();
         if (Level.getMainLevel(player) == 0) {
             if (Level.getMiningLevel(player) >= 100 && Level.getFarmingLevel(player) >= 100) {
+                ItemStack levelUpButton = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE).setDisplayName(ChatColor.GREEN + "Level Up! Level up cost: $1000").build();
                 return levelUpButton;
             } else {
                 return noXP;
             }
         } else if (Level.getMainLevel(player) == 1) {
             if (Level.getMiningLevel(player) >= 1000 && Level.getFarmingLevel(player) >= 1000) {
+                ItemStack levelUpButton = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE).setDisplayName(ChatColor.GREEN + "Level Up! Level up cost: $10000").build();
                 return levelUpButton;
             } else {
                 return noXP;

@@ -16,7 +16,7 @@ public class Bosses {
         AttributeInstance health = bob.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         AttributeInstance speed = bob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
         health.setBaseValue(150d);
-        speed.setBaseValue(0.175d);
+        speed.setBaseValue(0.223d);
         ((Zombie) bob).setAdult();
 
         bob.getEquipment().setHelmet(CustomItems.bobHelmet());

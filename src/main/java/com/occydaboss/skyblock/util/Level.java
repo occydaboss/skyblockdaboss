@@ -47,6 +47,15 @@ public class Level {
         playerData.set(combat, PersistentDataType.DOUBLE, 0d);
     }
 
+    public static void resetSubLevels(Player player) {
+
+        PersistentDataContainer playerData = player.getPersistentDataContainer();
+        
+        playerData.set(mining, PersistentDataType.DOUBLE, 0d);
+        playerData.set(farming, PersistentDataType.DOUBLE, 0d);
+        playerData.set(combat, PersistentDataType.DOUBLE, 0d);
+    }
+
     public static void setMainLevel(Player player, int level) {
         PersistentDataContainer playerData = player.getPersistentDataContainer();
         playerData.set(mainLevel, PersistentDataType.INTEGER, level);

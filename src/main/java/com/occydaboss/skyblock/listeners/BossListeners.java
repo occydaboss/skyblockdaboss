@@ -108,10 +108,9 @@ public class BossListeners implements Listener {
                 bobBar1.remove(bobBar2.get(e.getEntity()));
                 bobBar3.remove(bobBar2.get(e.getEntity()));
                 bobBar2.remove(e.getEntity());
-                ((LivingEntity) e.getEntity()).setHealth(0);
+                ((LivingEntity) e.getEntity()).setHealth(-1f);
             }
         }
-        return;
     }
 
     @EventHandler
