@@ -1,7 +1,6 @@
 package com.occydaboss.skyblock.commands;
 
 import com.fastasyncworldedit.core.FaweAPI;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.occydaboss.skyblock.SkyBlock;
@@ -35,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
 
 public class CommandIsland implements CommandExecutor {
 
@@ -55,22 +53,14 @@ public class CommandIsland implements CommandExecutor {
                 SkyBlock.worldBorderApi.resetWorldBorderToGlobal(player);
                 Level.resetPlayerLevels(player);
                 player.teleport(new Location(Bukkit.getWorld("world"), 0, 62, 0));
-                FindIterable<Document> iterable = SkyBlock.database.getCollection("islands")
-                        .find(Filters.eq("_id", player.getUniqueId().toString()));
-                Iterator iterator = iterable.iterator();
-                while (iterator.hasNext()) {
-                    Document document = (Document) iterator.next();
-                    int x = (int) document.get("x");
-                    int z = (int) document.get("z");
 
-                    BlockVector3 pos1 = BlockVector3.at(x - 50, 0, z - 50);
-                    BlockVector3 pos2 = BlockVector3.at(x + 50, 256, z + 50);
+                Location pos1 = IslandAPI.getIslandBounds(player)[0];
+                Location pos2 = IslandAPI.getIslandBounds(player)[1];
 
-                    for (int x1 = pos1.getX(); x1 <= pos2.getBlockX(); x1++) {
-                        for (int y1 = pos1.getY(); y1 <= pos2.getBlockY(); y1++) {
-                            for (int z1 = pos1.getZ(); z1 <= pos2.getBlockZ(); z1++) {
-                                Bukkit.getWorld("islands").getBlockAt(x1, y1, z1).setType(Material.AIR);
-                            }
+                for (int x1 = pos1.getBlockX(); x1 <= pos2.getBlockX(); x1++) {
+                    for (int y1 = pos1.getBlockY(); y1 <= pos2.getBlockY(); y1++) {
+                        for (int z1 = pos1.getBlockZ(); z1 <= pos2.getBlockZ(); z1++) {
+                            Bukkit.getWorld("islands").getBlockAt(x1, y1, z1).setType(Material.AIR);
                         }
                     }
                 }

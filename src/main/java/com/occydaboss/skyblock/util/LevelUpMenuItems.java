@@ -65,7 +65,7 @@ public class LevelUpMenuItems {
     public static ItemStack combatXP(Player player) {
         ItemStack item = new ItemStack(Material.STONE);
         if (Level.getMainLevel(player) == 1) {
-            if (Level.getCombatLevel(player) == 1) {
+            if (Level.getCombatLevel(player) >= 1) {
                 item = new ItemBuilder(Material.GOLDEN_SWORD).setDisplayName(ChatColor.GREEN + "Completed!").addItemFlag(ItemFlag.HIDE_ATTRIBUTES).build();
             } else {
                 item = new ItemBuilder(Material.GOLDEN_SWORD).setDisplayName(ChatColor.YELLOW + "You must defeat Bob to progress").setLore(ChatColor.WHITE + "Summon Bob with an Enchanted Flesh").addItemFlag(ItemFlag.HIDE_ATTRIBUTES).build();

@@ -9,6 +9,7 @@ import com.mongodb.client.MongoDatabase;
 import com.occydaboss.skyblock.commands.*;
 import com.occydaboss.skyblock.commands.tabcompleters.CommandIslandTabCompleter;
 import com.occydaboss.skyblock.commands.tabcompleters.CommandSetLevelTabCompleter;
+import com.occydaboss.skyblock.listeners.*;
 import com.occydaboss.skyblock.recipes.Recipes;
 import com.occydaboss.skyblock.util.AddPrefix;
 import com.occydaboss.skyblock.util.EmptyChunkGenerator;
@@ -56,7 +57,11 @@ public final class SkyBlock extends JavaPlugin {
         this.getCommand("setlevel").setTabCompleter(new CommandSetLevelTabCompleter());
 
         // Register Events
-        this.getServer().getPluginManager().registerEvents(new Listeners(), this);
+        this.getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
+        this.getServer().getPluginManager().registerEvents(new BossListeners(), this);
+        this.getServer().getPluginManager().registerEvents(new CobblestoneGeneratorListener(), this);
+        this.getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 
         // Island
         if (Bukkit.getWorld("islands") == null) {
